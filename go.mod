@@ -1,4 +1,4 @@
-module crawler-geektime
+module github.com/cczyWyc/crawler-geektime
 
 go 1.19
 

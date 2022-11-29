@@ -2,9 +2,9 @@ package main
 
 import (
 	"bytes"
-	"crawler-geektime/collect"
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
+	"github.com/cczyWyc/crawler-geektime/collect"
 	"time"
 )
 
