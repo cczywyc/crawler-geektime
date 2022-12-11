@@ -1,31 +1,28 @@
 package main
 
 import (
-	"bytes"
 	"fmt"
-	"github.com/PuerkitoBio/goquery"
 	"github.com/cczyWyc/crawler-geektime/collect"
+	"github.com/cczyWyc/crawler-geektime/proxy"
 	"time"
 )
 
 func main() {
-	url := "https://book.douban.com/subject/1007305/"
+	proxyURLs := []string{"http://127.0.0.1:7890"}
+	p, err := proxy.RoundRobinProxySwitcher(proxyURLs...)
+	if err != nil {
+		fmt.Println("RoundRobinProxySwitcher failed")
+	}
+	url := "https://www.google.com"
+
 	var f collect.FetCher = collect.BrowserFetch{
 		Timeout: 3000 * time.Millisecond,
+		Proxy:   p,
 	}
 	body, err := f.Get(url)
 	if err != nil {
-		fmt.Printf("read contect faield: %v", err)
+		fmt.Printf("read contect faield: %v\n", err)
 		return
 	}
-	fmt.Println(body)
-
-	doc, err := goquery.NewDocumentFromReader(bytes.NewReader(body))
-	if err != nil {
-		fmt.Printf("read content failed: %v", err)
-	}
-	doc.Find("div.news_li h2 a[target=_blank]").Each(func(i int, s *goquery.Selection) {
-		title := s.Text()
-		fmt.Printf("Review %d %s\n", i, title)
-	})
+	fmt.Println(string(body))
 }
