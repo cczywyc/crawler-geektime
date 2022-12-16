@@ -1,17 +1,24 @@
 package main
 
 import (
-	"fmt"
 	"github.com/cczyWyc/crawler-geektime/collect"
+	"github.com/cczyWyc/crawler-geektime/log"
 	"github.com/cczyWyc/crawler-geektime/proxy"
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 	"time"
 )
 
 func main() {
+	plugin, c := log.NewFilePlugin("./crawler.log", zapcore.InfoLevel)
+	defer c.Close()
+	logger := log.NewLogger(plugin)
+	logger.Info("log init succeed")
+
 	proxyURLs := []string{"http://127.0.0.1:7890"}
 	p, err := proxy.RoundRobinProxySwitcher(proxyURLs...)
 	if err != nil {
-		fmt.Println("RoundRobinProxySwitcher failed")
+		logger.Error("RoundRobinProxySwitcher failed")
 	}
 	url := "https://www.google.com"
 
@@ -21,8 +28,8 @@ func main() {
 	}
 	body, err := f.Get(url)
 	if err != nil {
-		fmt.Printf("read contect faield: %v\n", err)
+		logger.Error("read content failed", zap.Error(err))
 		return
 	}
-	fmt.Println(string(body))
+	logger.Info("get content", zap.Int("len", len(body)))
 }
