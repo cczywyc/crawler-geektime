@@ -25,7 +25,7 @@ func main() {
 	}
 
 	// cookie
-	var seeds []*collect.Request
+	var seeds = make([]*collect.Request, 0, 1000)
 	for i := 0; i <= 0; i += 25 {
 		str := fmt.Sprintf("https://www.douban.com/group/szsh/discussion?start=%d", i)
 		seeds = append(seeds, &collect.Request{
